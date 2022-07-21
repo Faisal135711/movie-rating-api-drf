@@ -50,3 +50,49 @@ class MovieDetailAV(APIView):
             return Response({'error': 'Movie not found'}, status=status.HTTP_404_NOT_FOUND)
         movie.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    
+class DramaListAV(APIView):
+    def get(self, request):
+        dramas = Drama.objects.all()
+        serializer = DramaSerializer(dramas, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request):
+        serializer = DramaSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)
+        
+        
+class DramaDetailAV(APIView):
+    def get(self, request, pk):
+        try:
+            drama = Drama.objects.get(pk=pk)
+        except:
+            return Response({'error': 'Drama not found'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = DramaSerializer(drama)
+        return Response(serializer.data)
+    
+    def put(self, request, pk):
+        try:
+            drama = Drama.objects.get(pk=pk)
+        except:
+            return Response({'error': 'Drama not found'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = DramaSerializer(drama, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)
+        
+    def delete(self, request, pk):
+        try:
+            drama = Drama.objects.get(pk=pk)
+        except:
+            return Response({'error': 'Drama not found'}, status=status.HTTP_404_NOT_FOUND)
+        drama.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+        
