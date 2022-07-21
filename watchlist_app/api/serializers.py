@@ -14,5 +14,13 @@ class MovieSerializer(serializers.ModelSerializer):
         return len(object.name)
         
         
-class DramaSerializer(serializers.Serializer):
-    pass
+class DramaSerializer(serializers.ModelSerializer):
+    short_description = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Drama 
+        # exclude = ['description']
+        fields = ['name', 'description', 'short_description']
+
+    def get_short_description(self, object):
+        return object.description[:2]
