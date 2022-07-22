@@ -1,17 +1,18 @@
 from rest_framework import serializers
 
-from watchlist_app.models import Movie, Drama
+from watchlist_app.models import WatchList, Drama, StreamPlatform
 
-class MovieSerializer(serializers.ModelSerializer):
-    name_len = serializers.SerializerMethodField()
-
+class WatchListSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Movie
+        model = WatchList
         fields = "__all__"
         # exclude = ['name']
 
-    def get_name_len(self, object):
-        return len(object.name)
+    
+class StreamPlatformSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StreamPlatform
+        fields = "__all__"
         
         
 class DramaSerializer(serializers.ModelSerializer):
