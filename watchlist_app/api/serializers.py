@@ -1,6 +1,11 @@
 from rest_framework import serializers
 
-from watchlist_app.models import WatchList, Drama, StreamPlatform
+from watchlist_app.models import (
+    WatchList, 
+    StreamPlatform,
+    Drama, 
+    DramaStreamPlatform,
+)
 
 class WatchListSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,9 +24,16 @@ class DramaSerializer(serializers.ModelSerializer):
     short_description = serializers.SerializerMethodField()
 
     class Meta:
-        model = Drama 
+        model = Drama
+        fields = "__all__" 
         # exclude = ['description']
-        fields = ['name', 'description', 'short_description']
+        # fields = ['name', 'description', 'short_description']
 
     def get_short_description(self, object):
         return object.description[:2]
+
+
+class DramaStreamPlatformSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DramaStreamPlatform
+        fields = "__all__"

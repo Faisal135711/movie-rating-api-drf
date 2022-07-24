@@ -3,11 +3,17 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.views import APIView
 
-from watchlist_app.models import WatchList, StreamPlatform, Drama
+from watchlist_app.models import (
+    WatchList, 
+    StreamPlatform, 
+    Drama,
+    DramaStreamPlatform,
+)
 from watchlist_app.api.serializers import (
     WatchListSerializer, 
     StreamPlatformSerializer,
     DramaSerializer,
+    DramaStreamPlatformSerializer,
 )
     
 
@@ -145,3 +151,49 @@ class DramaDetailAV(APIView):
         drama.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
         
+
+class DramaStreamPlatformListAV(APIView):
+    def get(self, request):
+        platforms = DramaStreamPlatform.objects.all()
+        serializer = DramaStreamPlatformSerializer(platforms, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = DramaStreamPlatformSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)
+
+
+class DramaStreamPlatformDetailAV(APIView):
+    def get(self, request, pk):
+        try:
+            platform = DramaStreamPlatform.objects.get(pk=pk)
+        except:
+            return Response({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = DramaStreamPlatformSerializer(platform)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        try:
+            platform = DramaStreamPlatform.objects.get(pk=pk)
+        except:
+            return Response({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = DramaStreamPlatformSerializer(platform, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)
+
+
+    def delete(self, request, pk):
+        try:
+            platform = DramaStreamPlatform.objects.get(pk=pk)
+        except:
+            return Response({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
+        platform.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+ 
