@@ -15,10 +15,7 @@ class WatchListSerializer(serializers.ModelSerializer):
 
     
 class StreamPlatformSerializer(serializers.ModelSerializer):
-    # watchlist = WatchListSerializer(many=True, read_only=True)
-    # watchlist = serializers.StringRelatedField(many=True)
-    # watchlist = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
-    watchlist = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='movie-detail')
+    watchlist = WatchListSerializer(many=True, read_only=True)
 
     class Meta:
         model = StreamPlatform
@@ -31,14 +28,15 @@ class DramaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Drama
         fields = "__all__" 
-        # exclude = ['description']
-        # fields = ['name', 'description', 'short_description']
 
     def get_short_description(self, object):
         return object.description[:2]
 
 
 class DramaStreamPlatformSerializer(serializers.ModelSerializer):
+    drama = DramaSerializer(many=True, read_only=True)
+    # drama = serializers.StringRelatedField(many=True)
+
     class Meta:
         model = DramaStreamPlatform
         fields = "__all__"
