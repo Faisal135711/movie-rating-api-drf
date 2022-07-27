@@ -22,8 +22,21 @@ class WatchList(models.Model):
 
     def __str__(self):
         return self.title
-    
 
+
+class Review(models.Model):
+    rating = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    description = models.CharField(max_length=200, null=True)
+    active = models.BooleanField(default=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    watchlist = models.ForeignKey(WatchList, on_delete=models.CASCADE, related_name='reviews')
+    
+    def __str__(self):
+        return str(self.rating) + " " + self.watchlist.title
+
+    
+#practice
 class DramaStreamPlatform(models.Model):
     name = models.CharField(max_length=30)
     about = models.CharField(max_length=150)
