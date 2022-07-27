@@ -14,7 +14,7 @@ class WatchListSerializer(serializers.ModelSerializer):
         # exclude = ['name']
 
     
-class StreamPlatformSerializer(serializers.ModelSerializer):
+class StreamPlatformSerializer(serializers.HyperlinkedModelSerializer):
     watchlist = WatchListSerializer(many=True, read_only=True)
 
     class Meta:
