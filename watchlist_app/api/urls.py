@@ -13,22 +13,27 @@ from watchlist_app.api.views import (
     DramaDetailAV,
     DramaStreamPlatformListAV,
     DramaStreamPlatformDetailAV,
+    DramaReviewListAV,
+    DramaReviewDetailAV,
 )
 
 urlpatterns = [
-    path('list/', WatchListAV.as_view(), name='movie-list'),
-    path('<int:pk>/', WatchDetailAV.as_view(), name='movie-detail'),
+    # path('list/', WatchListAV.as_view(), name='movie-list'),
+    # path('<int:pk>/', WatchDetailAV.as_view(), name='movie-detail'),
     
-    path('stream/', StreamPlatformListAV.as_view(), name='streamplatform-list'),
-    path('stream/<int:pk>/', StreamPlatformDetailAV.as_view(), name='streamplatform-detail'),
+    # path('stream/', StreamPlatformListAV.as_view(), name='streamplatform-list'),
+    # path('stream/<int:pk>/', StreamPlatformDetailAV.as_view(), name='streamplatform-detail'),
 
-    path('review/', ReviewList.as_view(), name='review-list'),
-    path('review/<int:pk>/', ReviewDetail.as_view(), name='review-detail'),
+    # path('review/', ReviewList.as_view(), name='review-list'),
+    # path('review/<int:pk>/', ReviewDetail.as_view(), name='review-detail'),
 
     # practice
-    # path('list/', DramaListAV.as_view(), name='drama-list'),
-    # path('<int:pk>/', DramaDetailAV.as_view(), name='drama-detail'),
+    path('list/', DramaListAV.as_view(), name='drama-list'),
+    path('<int:pk>/', DramaDetailAV.as_view(), name='drama-detail'),
 
-    # path('stream/', DramaStreamPlatformListAV.as_view(), name='stream-list'),
-    # path('stream/<int:pk>/', DramaStreamPlatformDetailAV.as_view(), name='stream-detail'),
+    path('stream/', DramaStreamPlatformListAV.as_view(), name='stream-list'),
+    path('stream/<int:pk>/', DramaStreamPlatformDetailAV.as_view(), name='stream-detail'),
+
+    path('review/', DramaReviewListAV.as_view(), name='review-list'),
+    path('review/<int:pk>/', DramaReviewDetailAV.as_view(), name='review-detail'),
 ]

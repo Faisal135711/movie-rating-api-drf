@@ -7,6 +7,7 @@ from watchlist_app.models import (
 
     Drama, 
     DramaStreamPlatform,
+    DramaReview
 )
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -31,6 +32,13 @@ class StreamPlatformSerializer(serializers.ModelSerializer):
         model = StreamPlatform
         fields = "__all__"
         
+
+# practice
+
+class DramaReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DramaReview
+        fields = "__all__"
         
 class DramaSerializer(serializers.ModelSerializer):
     short_description = serializers.SerializerMethodField()

@@ -56,3 +56,15 @@ class Drama(models.Model):
     def __str__(self):
         return self.title
     
+
+class DramaReview(models.Model):
+    rating = models.PositiveIntegerField(validators=[MinValueValidator(1), 
+                                                     MaxValueValidator(5)])
+    description = models.CharField(max_length=200, null=True)
+    active = models.BooleanField(default=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    drama = models.ForeignKey(Drama, on_delete=models.CASCADE, related_name='reviews')
+    
+    def __str__(self):
+        return str(self.rating) + " " + self.drama.title

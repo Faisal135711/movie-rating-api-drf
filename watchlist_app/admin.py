@@ -7,6 +7,7 @@ from watchlist_app.models import (
     
     Drama,
     DramaStreamPlatform,
+    DramaReview
 )
 
 # Register your models here.
@@ -16,3 +17,4 @@ admin.site.register(Review)
 
 admin.site.register(Drama)
 admin.site.register(DramaStreamPlatform)
+admin.site.register(DramaReview)

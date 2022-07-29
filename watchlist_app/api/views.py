@@ -11,6 +11,7 @@ from watchlist_app.models import (
 
     Drama,
     DramaStreamPlatform,
+    DramaReview
 )
 from watchlist_app.api.serializers import (
     WatchListSerializer, 
@@ -19,6 +20,7 @@ from watchlist_app.api.serializers import (
 
     DramaSerializer,
     DramaStreamPlatformSerializer,
+    DramaReviewSerializer
 )
 
 
@@ -133,6 +135,30 @@ class StreamPlatformDetailAV(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
     
     
+#practice
+
+class DramaReviewListAV(mixins.ListModelMixin,
+                        generics.GenericAPIView):
+    queryset = DramaReview.objects.all()
+    serializer_class = DramaReviewSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+class DramaReviewDetailAV(mixins.RetrieveModelMixin,
+                        mixins.CreateModelMixin,
+                        generics.GenericAPIView):
+    queryset = DramaReview.objects.all()
+    serializer_class = DramaReviewSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+
 class DramaListAV(APIView):
     def get(self, request):
         dramas = Drama.objects.all()
