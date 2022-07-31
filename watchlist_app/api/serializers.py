@@ -5,15 +5,13 @@ from watchlist_app.models import (
     StreamPlatform,
     Review,
 
-    Drama, 
-    DramaStreamPlatform,
-    DramaReview
 )
 
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
-        fields = "__all__"
+        # fields = "__all__"
+        exclude = ['watchlist']
         
 
 class WatchListSerializer(serializers.ModelSerializer):
@@ -32,29 +30,3 @@ class StreamPlatformSerializer(serializers.ModelSerializer):
         model = StreamPlatform
         fields = "__all__"
         
-
-# practice
-
-class DramaReviewSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = DramaReview
-        fields = "__all__"
-        
-class DramaSerializer(serializers.ModelSerializer):
-    short_description = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Drama
-        fields = "__all__" 
-
-    def get_short_description(self, object):
-        return object.description[:2]
-
-
-class DramaStreamPlatformSerializer(serializers.ModelSerializer):
-    drama = DramaSerializer(many=True, read_only=True)
-    # drama = serializers.StringRelatedField(many=True)
-
-    class Meta:
-        model = DramaStreamPlatform
-        fields = "__all__"

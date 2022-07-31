@@ -9,24 +9,30 @@ from watchlist_app.models import (
     StreamPlatform, 
     Review,
 
-    Drama,
-    DramaStreamPlatform,
-    DramaReview
 )
 from watchlist_app.api.serializers import (
     WatchListSerializer, 
     StreamPlatformSerializer,
     ReviewSerializer,
 
-    DramaSerializer,
-    DramaStreamPlatformSerializer,
-    DramaReviewSerializer
 )
 
 
-class ReviewList(generics.ListCreateAPIView):
-    queryset = Review.objects.all()
+class ReviewCreate(generics.CreateAPIView):
     serializer_class = ReviewSerializer
+
+    def perform_create(self, serializer):
+        pk = self.kwargs['pk']
+        watchlist = WatchList.objects.get(pk=pk)
+        serializer.save(watchlist=watchlist)
+
+
+class ReviewList(generics.ListAPIView):
+    serializer_class = ReviewSerializer
+
+    def get_queryset(self):
+        pk = self.kwargs['pk']
+        return Review.objects.filter(watchlist=pk)    
 
 
 class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -124,117 +130,3 @@ class StreamPlatformDetailAV(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
     
     
-#practice
-
-class DramaReviewListAV(mixins.ListModelMixin,
-                        generics.GenericAPIView):
-    queryset = DramaReview.objects.all()
-    serializer_class = DramaReviewSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-
-class DramaReviewDetailAV(mixins.RetrieveModelMixin,
-                        mixins.CreateModelMixin,
-                        generics.GenericAPIView):
-    queryset = DramaReview.objects.all()
-    serializer_class = DramaReviewSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
-
-class DramaListAV(APIView):
-    def get(self, request):
-        dramas = Drama.objects.all()
-        serializer = DramaSerializer(dramas, many=True)
-        return Response(serializer.data)
-    
-    def post(self, request):
-        serializer = DramaSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors)
-        
-        
-class DramaDetailAV(APIView):
-    def get(self, request, pk):
-        try:
-            drama = Drama.objects.get(pk=pk)
-        except:
-            return Response({'error': 'Drama not found'}, status=status.HTTP_404_NOT_FOUND)
-        serializer = DramaSerializer(drama)
-        return Response(serializer.data)
-    
-    def put(self, request, pk):
-        try:
-            drama = Drama.objects.get(pk=pk)
-        except:
-            return Response({'error': 'Drama not found'}, status=status.HTTP_404_NOT_FOUND)
-        serializer = DramaSerializer(drama, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors)
-        
-    def delete(self, request, pk):
-        try:
-            drama = Drama.objects.get(pk=pk)
-        except:
-            return Response({'error': 'Drama not found'}, status=status.HTTP_404_NOT_FOUND)
-        drama.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-        
-
-class DramaStreamPlatformListAV(APIView):
-    def get(self, request):
-        platforms = DramaStreamPlatform.objects.all()
-        serializer = DramaStreamPlatformSerializer(platforms, many=True)
-        return Response(serializer.data)
-
-    def post(self, request):
-        serializer = DramaStreamPlatformSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors)
-
-
-class DramaStreamPlatformDetailAV(APIView):
-    def get(self, request, pk):
-        try:
-            platform = DramaStreamPlatform.objects.get(pk=pk)
-        except:
-            return Response({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
-        serializer = DramaStreamPlatformSerializer(platform)
-        return Response(serializer.data)
-
-    def put(self, request, pk):
-        try:
-            platform = DramaStreamPlatform.objects.get(pk=pk)
-        except:
-            return Response({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
-        serializer = DramaStreamPlatformSerializer(platform, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors)
-
-
-    def delete(self, request, pk):
-        try:
-            platform = DramaStreamPlatform.objects.get(pk=pk)
-        except:
-            return Response({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
-        platform.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
- 
