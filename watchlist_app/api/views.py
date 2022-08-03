@@ -26,7 +26,6 @@ class ReviewCreate(generics.CreateAPIView):
 
     def get_queryset(self):
         return Review.objects.all()
-    
 
     def perform_create(self, serializer):
         pk = self.kwargs['pk']
