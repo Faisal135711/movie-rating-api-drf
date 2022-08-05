@@ -8,6 +8,8 @@ from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnl
 
 from django.shortcuts import get_object_or_404
 
+from watchlist_app.api.permission import AdminOrReadOnly, ReviewUserOrReadOnly
+
 from watchlist_app.models import (
     WatchList, 
     StreamPlatform, 
@@ -53,7 +55,7 @@ class ReviewList(generics.ListAPIView):
 class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [ReviewUserOrReadOnly]
     
 
 class WatchListAV(APIView):
