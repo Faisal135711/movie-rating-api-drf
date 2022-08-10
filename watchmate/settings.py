@@ -145,5 +145,6 @@ REST_FRAMEWORK = {
         'user': '3/day',
         'review-create': '2/day',
         'review-list': '5/day',
+        'review-detail': '4/day',
     }
 }

@@ -5,7 +5,11 @@ from rest_framework.views import APIView
 from rest_framework import generics, mixins, viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
-from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
+from rest_framework.throttling import (
+    UserRateThrottle, 
+    AnonRateThrottle, 
+    ScopedRateThrottle,
+)
 
 from django.shortcuts import get_object_or_404
 
@@ -72,7 +76,9 @@ class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [ReviewUserOrReadOnly]
-    throttle_classes = [UserRateThrottle, AnonRateThrottle]
+    # throttle_classes = [UserRateThrottle, AnonRateThrottle]
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = 'review-detail'
     
 
 class WatchListAV(APIView):
