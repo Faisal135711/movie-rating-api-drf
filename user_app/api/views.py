@@ -8,7 +8,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.models import User 
 
 from user_app.api.serializers import RegistrationSerializer
-# from user_app import models
+from user_app import models
 
 
 @api_view(['POST'])
@@ -29,8 +29,8 @@ def registration_view(request):
             data['response'] = 'Registration Successful!'
             data['username'] = account.username 
             data['email'] = account.email
-            # data['token'] = Token.objects.get(user=account).key 
-            refresh = RefreshToken.for_user(account)
+            data['token'] = Token.objects.get(user=account).key 
+            # refresh = RefreshToken.for_user(account)
             data['token'] = {
                 'refresh': str(refresh),
                 'access': str(refresh.access_token)
