@@ -100,7 +100,7 @@ class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 
-class WatchList(generics.ListAPIView):
+class WatchListGV(generics.ListAPIView):
     queryset = WatchList.objects.all()
     serializer_class = WatchListSerializer      
     # filter_backends = [DjangoFilterBackend]
