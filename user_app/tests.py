@@ -16,3 +16,24 @@ class RegisterTestCase(APITestCase):
 
         response = self.client.post(reverse("register"), data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+
+class LoginLogoutTestCase(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="example",
+                                        password="NewPassword@123")
+    
+    def test_login(self):
+        data = {
+            "username": "example",
+            "password": "NewPassword@123"
+        }
+        response = self.client.post(reverse("login"), data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+    def test_logut(self):
+        self.token = Token.objects.get(user__username="example")
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+        response = self.client.post(reverse("logout"))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
