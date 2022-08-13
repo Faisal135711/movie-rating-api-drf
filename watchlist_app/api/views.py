@@ -34,6 +34,8 @@ from watchlist_app.api.throttling import (
     ReviewCreateThrottle,
     ReviewListThrottle,
 )
+from watchlist_app.api.pagination import WatchListPagination
+
 
 class UserReview(generics.ListAPIView):
     serializer_class = ReviewSerializer
@@ -109,6 +111,7 @@ class WatchListGV(generics.ListAPIView):
     # search_fields = ['title', 'platform__name']
     filter_backends = [OrderingFilter]
     ordering_filters = ['avg_rating']
+    pagination_class = WatchListPagination
     
 
 class WatchListAV(APIView):
