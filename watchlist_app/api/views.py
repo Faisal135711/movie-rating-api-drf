@@ -5,8 +5,16 @@ from rest_framework.views import APIView
 from rest_framework import generics, mixins, viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.throttling import (
+    UserRateThrottle, 
+    AnonRateThrottle, 
+    ScopedRateThrottle,
+)
+from rest_framework.filters import SearchFilter, OrderingFilter
 
 from django.shortcuts import get_object_or_404
+
+from django_filters.rest_framework import DjangoFilterBackend
 
 from watchlist_app.api.permission import AdminOrReadOnly, ReviewUserOrReadOnly
 
@@ -22,10 +30,29 @@ from watchlist_app.api.serializers import (
     ReviewSerializer,
 
 )
+from watchlist_app.api.throttling import (
+    ReviewCreateThrottle,
+    ReviewListThrottle,
+)
+
+class UserReview(generics.ListAPIView):
+    serializer_class = ReviewSerializer
+    # permission_classes = [IsAuthenticated]
+    # throttle_classes = [ReviewListThrottle, AnonRateThrottle]
+
+    # def get_queryset(self):
+    #     username = self.kwargs['username']
+    #     return Review.objects.filter(review_user__username=username)
+
+    def get_queryset(self):
+        username = self.request.query_params.get('username', None)
+        return Review.objects.filter(review_user__username=username)
 
 
 class ReviewCreate(generics.CreateAPIView):
     serializer_class = ReviewSerializer
+    permission_classes = [IsAuthenticated]
+    throttle_classes = [ReviewCreateThrottle]
 
     def get_queryset(self):
         return Review.objects.all()
@@ -54,6 +81,9 @@ class ReviewCreate(generics.CreateAPIView):
 class ReviewList(generics.ListAPIView):
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticated]
+    throttle_classes = [ReviewListThrottle, AnonRateThrottle]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['review_user__username', 'active']
 
     def get_queryset(self):
         pk = self.kwargs['pk']
@@ -64,9 +94,26 @@ class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [ReviewUserOrReadOnly]
+    # throttle_classes = [UserRateThrottle, AnonRateThrottle]
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = 'review-detail'
+
+
+
+class WatchListGV(generics.ListAPIView):
+    queryset = WatchList.objects.all()
+    serializer_class = WatchListSerializer      
+    # filter_backends = [DjangoFilterBackend]
+    # filterset_fields = ['title', 'platform__name']
+    # filter_backends = [SearchFilter]
+    # search_fields = ['title', 'platform__name']
+    filter_backends = [OrderingFilter]
+    ordering_filters = ['avg_rating']
     
 
 class WatchListAV(APIView):
+    permission_classes = [AdminOrReadOnly]
+    
     def get(self, request):
         movies = WatchList.objects.all()  
         serializer = WatchListSerializer(movies, many=True)      
@@ -82,6 +129,8 @@ class WatchListAV(APIView):
 
 
 class WatchDetailAV(APIView):
+    permission_classes = [AdminOrReadOnly]
+
     def get(self, request, pk):
         try:
             movie = WatchList.objects.get(pk=pk)
@@ -114,6 +163,7 @@ class WatchDetailAV(APIView):
 class StreamPlatformVS(viewsets.ModelViewSet):
     queryset = StreamPlatform.objects.all()
     serializer_class = StreamPlatformSerializer
+    permission_classes = [AdminOrReadOnly]
 
 
 # class StreamPlatformVS(viewsets.ViewSet):
@@ -138,6 +188,8 @@ class StreamPlatformVS(viewsets.ModelViewSet):
 
     
 class StreamPlatformListAV(APIView):
+    permission_classes = [AdminOrReadOnly]
+
     def get(self, request):
         streams = StreamPlatform.objects.all()
         serializer = StreamPlatformSerializer(streams, many=True, context={'request': request})
@@ -153,6 +205,8 @@ class StreamPlatformListAV(APIView):
         
         
 class StreamPlatformDetailAV(APIView):
+    permission_classes = [AdminOrReadOnly]
+
     def get(self, request, pk):
         try:
             stream = StreamPlatform.objects.get(pk=pk)
