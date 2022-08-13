@@ -113,9 +113,9 @@ class WatchListGV(generics.ListAPIView):
     # filterset_fields = ['title', 'platform__name']
     # filter_backends = [SearchFilter]
     # search_fields = ['title', 'platform__name']
-    filter_backends = [OrderingFilter]
-    ordering_filters = ['avg_rating']
-    pagination_class = WatchListLOPagination
+    # filter_backends = [OrderingFilter]
+    # ordering_filters = ['avg_rating']
+    pagination_class = WatchListCPagination
     
 
 class WatchListAV(APIView):
